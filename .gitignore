@@ -1,0 +1,12 @@
+/app/config/parameters.yml
+/phpunit.xml
+/vendor/
+.env
+docker-compose.yml
+.idea/*
+.php_cs.cache
+tests/report/
+*~
+*.swp
+*.swo
+.php_cs.*
