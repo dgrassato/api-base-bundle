@@ -14,7 +14,11 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
-class PaginationFactory
+/**
+ * Class PaginationFactory
+ * @package BaseBundle\Pagination
+ */
+class Pagination
 {
     private $router;
 

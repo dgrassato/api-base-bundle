@@ -4,6 +4,10 @@ namespace BaseBundle\Transformer;
 
 use League\Fractal\Serializer\ArraySerializer;
 
+/**
+ * Class CustomSerializer
+ * @package BaseBundle\Transformer
+ */
 class CustomSerializer extends ArraySerializer
 {
     public function collection($resourceKey, array $data)
