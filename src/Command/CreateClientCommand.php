@@ -18,6 +18,15 @@ class CreateClientCommand extends ContainerAwareCommand
         $this
             ->setName('api:oauth-server:client:create')
             ->setDescription('Creates a new oauth client')
+
+            ->addOption(
+                'name',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set client name(android, ios, etc).',
+                null
+            )
+
             ->addOption(
                 'redirect-uri',
                 null,
@@ -46,6 +55,7 @@ EOT
     {
         $clientManager = $this->getContainer()->get('fos_oauth_server.client_manager.default');
         $client = $clientManager->createClient();
+        $client->setName($input->getOption('name'));
         $client->setRedirectUris($input->getOption('redirect-uri'));
         $client->setAllowedGrantTypes($input->getOption('grant-type'));
         //$client->setAllowedGrantTypes(array('token', 'authorization_code'));

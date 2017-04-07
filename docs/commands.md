@@ -21,3 +21,6 @@ docker exec -it cli bin/console hautelook_alice:doctrine:fixtures:load -n
 
 
 bin/console doctrine:generate:entities AppBundle:Product
+
+
+php app/console acme:oauth-server:client:create --redirect-uri="http://symfony.dev/" --grant-type="authorization_code" --grant-type="password" --grant-type="refresh-token" --grant-type="token" --grant-type="client_credentials"
