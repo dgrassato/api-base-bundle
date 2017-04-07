@@ -1,0 +1,13 @@
+imports:
+    - { resource: cors.yml }
+    - { resource: jwt_atuh.yml }
+    - { resource: serializer.yml }
+    - { resource: security.yml }
+    - { resource: rest.yml }
+
+base:
+  entity_user_namespace: 'AppBundle\Entity\User'
+  authentication:
+    enabled: true
+    method: "jwt"
+    time_expiration: 3600000

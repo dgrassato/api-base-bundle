@@ -1,0 +1,41 @@
+# FOS Rest
+fos_rest:
+     format_listener:
+         rules:
+             - { path: '^/api', priorities: ['json', 'xml'], fallback_format: json, prefer_extension: true }
+             - { path: '^/', priorities: ['html'], fallback_format: html, prefer_extension: false }
+     view:
+         view_response_listener: force
+         formats:
+             json: true
+             xml:  true
+         force_redirects:
+             html: true
+         failed_validation: HTTP_BAD_REQUEST
+         default_engine: php
+     routing_loader:
+         default_format: json
+     serializer:
+         serialize_null: true
+     param_fetcher_listener: true
+     body_listener:
+      decoders:
+        json: fos_rest.decoder.json
+        xml: fos_rest.decoder.xml
+        html: fos_rest.decoder.xml
+     access_denied_listener:
+        json: true
+
+# Sensio extra, enable PSR7
+sensio_framework_extra:
+    router:      { annotations: true }
+    request:     { converters: true, auto_convert: true }
+    view:        { annotations: true }
+    cache:       { annotations: true }
+    security:    { annotations: true }
+    psr_message: { enabled: true }
+
+# Filter data
+dms_filter:
+    auto_filter_forms: false
+
