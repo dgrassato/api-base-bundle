@@ -3,7 +3,6 @@
 namespace BaseBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,7 +41,7 @@ class CreateClientCommand extends ContainerAwareCommand
                 null
             )
             ->setHelp(
-                <<<EOT
+                <<<'EOT'
                     The <info>%command.name%</info>command creates a new client.
 
 <info>php %command.full_name% [--redirect-uri=...] [--grant-type=...] name</info>
@@ -79,7 +78,7 @@ EOT
             sprintf(
                 'http://symfony.dev/oauth/v2/auth?client_id=%s&redirect_uri=%s&response_type=token',
                 $client->getPublicId(),
-                "http://symfony.dev"
+                'http://symfony.dev'
             )
         );
     }

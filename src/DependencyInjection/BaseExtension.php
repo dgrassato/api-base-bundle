@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class BaseExtension extends Extension
 {
-    protected $rootNode = "api_base";
+    protected $rootNode = 'api_base';
 
     /**
      * {@inheritdoc}
@@ -24,11 +24,10 @@ class BaseExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $variable = sprintf("%s.%s", $this->rootNode, 'entity_user_namespace');
+        $variable = sprintf('%s.%s', $this->rootNode, 'entity_user_namespace');
         $container->setParameter($variable, $config['entity_user_namespace']);
 
         $this->loadAuthenticationParameters($config, $container);
-
 
         $loader = new Loader\YamlFileLoader(
             $container,
@@ -45,33 +44,28 @@ class BaseExtension extends Extension
      */
     private function loadAuthenticationParameters($config, ContainerBuilder $container)
     {
-
-        foreach ($config['authentication'] as $key => $auth){
-
-             $variable = sprintf("%s.authentication.%s", $this->rootNode, $key);
+        foreach ($config['authentication'] as $key => $auth) {
+            $variable = sprintf('%s.authentication.%s', $this->rootNode, $key);
 
             $container->setParameter($variable, $config['authentication'][$key]);
         }
-
     }
 
     private function validateBundles(ContainerBuilder $container)
     {
         $bundles = $container->getParameter('kernel.bundles');
 
-        $stringStatus = sprintf("%s.authentication.enabled", $this->rootNode);
+        $stringStatus = sprintf('%s.authentication.enabled', $this->rootNode);
         $isAuthentication = $container->getParameter($stringStatus);
 
-        $stringMethod = sprintf("%s.authentication.method", $this->rootNode);
+        $stringMethod = sprintf('%s.authentication.method', $this->rootNode);
         $method = $container->getParameter($stringMethod);
 
-        if ($isAuthentication && $method === "jwt" && !isset($bundles['LexikJWTAuthenticationBundle'])) {
-
+        if ($isAuthentication && $method === 'jwt' && !isset($bundles['LexikJWTAuthenticationBundle'])) {
             throw new \RuntimeException("Please install and configure LexikJWTAuthenticationBundle bundle.\n use composer to install:\n composer require lexik/jwt-authentication-bundle");
         }
 
-        if ($isAuthentication && $method === "oauth2" && !isset($bundles['FOSOAuthServerBundle'])) {
-
+        if ($isAuthentication && $method === 'oauth2' && !isset($bundles['FOSOAuthServerBundle'])) {
             throw new \RuntimeException("Please install and configure FOSOAuthServerBundle bundle.\n use composer to install:\n composer require friendsofsymfony/oauth-server-bundle");
         }
     }

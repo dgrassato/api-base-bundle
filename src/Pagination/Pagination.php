@@ -5,7 +5,6 @@ namespace BaseBundle\Pagination;
 use BaseBundle\Transformer\CustomSerializer;
 use Doctrine\ORM\QueryBuilder;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
-use League\Fractal\Pagination\PaginatorInterface;
 use League\Fractal\Resource\Collection;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use League\Fractal;
@@ -15,8 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Class PaginationFactory
- * @package BaseBundle\Pagination
+ * Class PaginationFactory.
  */
 class Pagination
 {
@@ -99,7 +97,6 @@ class Pagination
         return $resource;
     }
 
-
     public function collection(Collection $colecao, $index = 'data', array $parsearIncludes = [], array $meta = [])
     {
         $fractal = $this->getFractal();
@@ -146,7 +143,7 @@ class Pagination
         $pagerfanta->setCurrentPage($page);
         $pagerfanta->setMaxPerPage($perPage);
 
-        $data = ['meta' => ['pagination'=> [] ]];
+        $data = ['meta' => ['pagination' => []]];
         foreach ($pagerfanta->getCurrentPageResults() as $result) {
             $data['data'][] = $result;
         }
@@ -165,7 +162,6 @@ class Pagination
 
         return $pagination;
     }
-
 
     /**
      * @return Fractal\Manager

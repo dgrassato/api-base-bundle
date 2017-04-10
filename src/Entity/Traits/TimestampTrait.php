@@ -7,12 +7,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class TimestampTrait
- * @package BaseBundle\Entity\Traits
+ * Class TimestampTrait.
  */
 trait TimestampTrait
 {
-
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
@@ -44,7 +42,7 @@ trait TimestampTrait
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param \DateTime $createdAt
      *
      * @return $this
      */
@@ -68,7 +66,7 @@ trait TimestampTrait
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param \DateTime $updatedAt
      *
      * @return $this
      */

@@ -5,8 +5,7 @@ namespace BaseBundle\Transformer;
 use League\Fractal\Serializer\ArraySerializer;
 
 /**
- * Class CustomSerializer
- * @package BaseBundle\Transformer
+ * Class CustomSerializer.
  */
 class CustomSerializer extends ArraySerializer
 {

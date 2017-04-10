@@ -6,7 +6,7 @@ use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * A wrapper for holding data to be used for a application/problem+json response
+ * A wrapper for holding data to be used for a application/problem+json response.
  */
 class ApiProblem
 {
@@ -42,9 +42,7 @@ class ApiProblem
 
             $statusTitles = array_keys($this->problemStatusTitles);
             if (in_array($statusCode, $statusTitles)) {
-
                 $type = $this->problemStatusTitles[$statusCode];
-
             }
 
             if ($this->getTitle() == null) {
@@ -81,7 +79,7 @@ class ApiProblem
 
     public function set($name, $value)
     {
-        $this->extraData = [ $name => $value ];
+        $this->extraData = [$name => $value];
     }
 
     public function setExtra(array $extraDta)
@@ -98,7 +96,6 @@ class ApiProblem
     {
         return $this->title;
     }
-
 
     /**
      * @param null|string $level

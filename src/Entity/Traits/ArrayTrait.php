@@ -5,8 +5,7 @@ namespace BaseBundle\Entity\Traits;
 use Zend\Hydrator\Reflection;
 
 /**
- * Class ArrayTrait
- * @package BaseBundle\Entity\Traits
+ * Class ArrayTrait.
  */
 trait ArrayTrait
 {
@@ -25,5 +24,4 @@ trait ArrayTrait
     {
         return (new Reflection())->extract($this);
     }
-
 }

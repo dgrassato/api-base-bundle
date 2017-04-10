@@ -5,8 +5,7 @@ namespace BaseBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class BaseBundle
- * @package BaseBundle
+ * Class BaseBundle.
  */
 class BaseBundle extends Bundle
 {

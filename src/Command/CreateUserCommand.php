@@ -5,7 +5,6 @@ namespace BaseBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
@@ -55,14 +54,14 @@ EOT
                          ]);
 
         /**
-         * Create variables via arguments
+         * Create variables via arguments.
          */
         $username = $input->getArgument('username');
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
 
         /**
-         * @var $userClass User namespace
+         * @var User namespace
          */
         $userClass = $this->getContainer()->getParameter('api_base.entity_user_namespace');
 
@@ -72,7 +71,7 @@ EOT
         $api = $this->getContainer()->get('api_base.authentication_manager');
 
         /**
-         * @var $user \Symfony\Component\Security\Core\User\UserInterface
+         * @var \Symfony\Component\Security\Core\User\UserInterface
          */
         $user = new $userClass();
         $user->setUsername($username);

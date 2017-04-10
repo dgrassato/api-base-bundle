@@ -6,8 +6,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Psr\Log\LogLevel;
 
 /**
- * Class ApiProblemException
- * @package BaseBundle\Exception
+ * Class ApiProblemException.
  */
 class ApiProblemException extends HttpException
 {
@@ -42,11 +41,10 @@ class ApiProblemException extends HttpException
         $problem->setLevel($level);
         $problem->setType($errorType);
 
-        if (count($extra) > 0 ){
+        if (count($extra) > 0) {
             $problem->setExtra($extra);
         }
 
-        throw new ApiProblemException($problem);
-
+        throw new self($problem);
     }
 }

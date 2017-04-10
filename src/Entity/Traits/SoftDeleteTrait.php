@@ -3,16 +3,13 @@
 namespace BaseBundle\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class SoftDeleteTrait
- * @package AppBundle\Entity\EntityTrait
+ * Class SoftDeleteTrait.
  */
 trait SoftDeleteTrait
 {
-
     /**
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      *
@@ -37,5 +34,4 @@ trait SoftDeleteTrait
 
         return $this;
     }
-
 }

@@ -5,8 +5,7 @@ namespace BaseBundle\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class AuthenticationManager
- * @package BaseBundle\Manager
+ * Class AuthenticationManager.
  */
 class AuthenticationManager
 {
@@ -20,15 +19,14 @@ class AuthenticationManager
     {
         $this->om = $om;
         $this->passwordEnconder = $passwordEnconder;
-
     }
 
     public function getUser($username)
     {
-        $qb =  $this->getOm()->createQueryBuilder('u');
+        $qb = $this->getOm()->createQueryBuilder('u');
 
         $select = $qb->select('u')
-            ->from($this->getUserClass(),'u')
+            ->from($this->getUserClass(), 'u')
             ->where('u.username = :username OR u.email = :email')
             ->setParameter('username', $username)
             ->setParameter('email', $username);
@@ -37,15 +35,14 @@ class AuthenticationManager
             ->getOneOrNullResult();
 
         return $user;
-
     }
 
     public function hasUser(\Symfony\Component\Security\Core\User\UserInterface $user)
     {
-        $qb =  $this->getOm()->createQueryBuilder('u');
+        $qb = $this->getOm()->createQueryBuilder('u');
 
         $select = $qb->select('u')
-            ->from($this->getUserClass(),'u')
+            ->from($this->getUserClass(), 'u')
             ->where('u.username = :username OR u.email = :email')
             ->setParameter('username', $user->getUsername())
             ->setParameter('email', $user->getEmail());
@@ -54,17 +51,14 @@ class AuthenticationManager
             ->getOneOrNullResult();
 
         return $user;
-
     }
 
     public function createUser(\Symfony\Component\Security\Core\User\UserInterface $user)
     {
-
         $checkOldUser = $this->hasUser($user);
 
-        if($checkOldUser){
-
-            throw new \Exception("User already exists.");
+        if ($checkOldUser) {
+            throw new \Exception('User already exists.');
         }
 
         $encoder = $this->getPasswordEnconder()->encodePassword($user, $user->getPassword());
@@ -76,7 +70,6 @@ class AuthenticationManager
         $this->getOm()->refresh($user);
 
         return $user;
-
     }
 
     public function validatePassword(\Symfony\Component\Security\Core\User\UserInterface $user, $password)
@@ -92,7 +85,7 @@ class AuthenticationManager
         $token = $this->getJwtAuthenticationEncoder()
             ->encode([
                          'username' => $user->getUsername(),
-                         'exp' => time() + $this->getJwtTimeExpiration()
+                         'exp' => time() + $this->getJwtTimeExpiration(),
                      ]);
 
         return $token;
@@ -101,8 +94,8 @@ class AuthenticationManager
     /**
      * @return \Doctrine\Common\Persistence\ObjectManager
      */
-    public function getOm() {
-
+    public function getOm()
+    {
         return $this->om;
     }
 
@@ -111,16 +104,18 @@ class AuthenticationManager
      *
      * @return AuthenticationManager
      */
-    public function setOm(ObjectManager $om) {
-
+    public function setOm(ObjectManager $om)
+    {
         $this->om = $om;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getPasswordEnconder() {
+    public function getPasswordEnconder()
+    {
         return $this->passwordEnconder;
     }
 
@@ -129,15 +124,18 @@ class AuthenticationManager
      *
      * @return AuthenticationManager
      */
-    public function setPasswordEnconder($passwordEnconder) {
+    public function setPasswordEnconder($passwordEnconder)
+    {
         $this->passwordEnconder = $passwordEnconder;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getUserClass() {
+    public function getUserClass()
+    {
         return $this->userClass;
     }
 
@@ -146,15 +144,18 @@ class AuthenticationManager
      *
      * @return AuthenticationManager
      */
-    public function setUserClass($userClass) {
+    public function setUserClass($userClass)
+    {
         $this->userClass = $userClass;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getJwtAuthenticationEncoder() {
+    public function getJwtAuthenticationEncoder()
+    {
         return $this->jwtAuthenticationEncoder;
     }
 
@@ -163,15 +164,18 @@ class AuthenticationManager
      *
      * @return AuthenticationManager
      */
-    public function setJwtAuthenticationEncoder($jwtAuthenticationEncoder) {
+    public function setJwtAuthenticationEncoder($jwtAuthenticationEncoder)
+    {
         $this->jwtAuthenticationEncoder = $jwtAuthenticationEncoder;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getJwtTimeExpiration() {
+    public function getJwtTimeExpiration()
+    {
         return $this->jwtTimeExpiration;
     }
 
@@ -180,11 +184,10 @@ class AuthenticationManager
      *
      * @return AuthenticationManager
      */
-    public function setJwtTimeExpiration($jwtTimeExpiration) {
+    public function setJwtTimeExpiration($jwtTimeExpiration)
+    {
         $this->jwtTimeExpiration = $jwtTimeExpiration;
+
         return $this;
     }
-
-
-
 }

@@ -5,13 +5,12 @@ namespace BaseBundle\Entity\Traits;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class IdTrait
- * @package BaseBundle\Entity\Traits
+ * Class IdTrait.
  */
 trait IdTrait
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer", options={"unsigned":true})
      * @ORM\Id
@@ -43,9 +42,8 @@ trait IdTrait
         return $this;
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->id = null;
     }
-
-
 }

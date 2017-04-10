@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 /**
- * Class ApiExceptionSubscriber
- * @package BaseBundle\EventListener
+ * Class ApiExceptionSubscriber.
  */
 class ApiExceptionSubscriber implements EventSubscriberInterface
 {
@@ -64,7 +63,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
 
         $data = $apiProblem->toArray();
 
-
         $response = new JsonResponse(
             $data,
             $apiProblem->getStatusCode()
@@ -77,12 +75,12 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => 'onKernelException'
+            KernelEvents::EXCEPTION => 'onKernelException',
         );
     }
 
     /**
-     * Adapted from the core Symfony exception handling in ExceptionListener
+     * Adapted from the core Symfony exception handling in ExceptionListener.
      *
      * @param \Exception $exception
      */

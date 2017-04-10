@@ -5,8 +5,7 @@ namespace BaseBundle\Entity\Traits;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class UiidTrait
- * @package BaseBundle\Entity\Traits
+ * Class UiidTrait.
  */
 trait UiidTrait
 {
@@ -23,7 +22,8 @@ trait UiidTrait
     /**
      * @return int
      */
-    public function getUuid() {
+    public function getUuid()
+    {
         return $this->uuid;
     }
 
@@ -32,14 +32,15 @@ trait UiidTrait
      *
      * @return UiidTrait
      */
-    public function setUuid(int $uuid) {
+    public function setUuid(int $uuid)
+    {
         $this->uuid = $uuid;
+
         return $this;
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->uuid = null;
     }
-
-
 }

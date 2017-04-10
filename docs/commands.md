@@ -22,5 +22,11 @@ docker exec -it cli bin/console hautelook_alice:doctrine:fixtures:load -n
 
 bin/console doctrine:generate:entities AppBundle:Product
 
+# Generate JWT Token Key
+mkdir -p var/jwt
+openssl genrsa -out var/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in var/jwt/private.pem -out var/jwt/public.pem
 
-php app/console acme:oauth-server:client:create --redirect-uri="http://symfony.dev/" --grant-type="authorization_code" --grant-type="password" --grant-type="refresh-token" --grant-type="token" --grant-type="client_credentials"
+php bin/console api:oauth-server:client:create --name=angular --redirect-uri="http://symfony.dev/" --grant-type="authorization_code" --grant-type="password" --grant-type="refresh_token" --grant-type="token" --grant-type="client_credentials"
+
+php bin/console api:oauth-server:client:create --name=angular --redirect-uri="http://symfony.dev/" --grant-type="authorization_code" --grant-type="password" --grant-type="refresh_token" --grant-type="token"
