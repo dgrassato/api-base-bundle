@@ -19,6 +19,11 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     private $debug;
     private $logger;
 
+    /**
+     * Content type for api problem response
+     */
+    const CONTENT_TYPE = 'application/problem+json';
+
     public function __construct($debug, LoggerInterface $logger)
     {
         $this->debug = $debug;
@@ -67,7 +72,7 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
             $data,
             $apiProblem->getStatusCode()
         );
-        $response->headers->set('Content-Type', 'application/problem+json');
+        $response->headers->set('Content-Type', self::CONTENT_TYPE);
 
         $event->setResponse($response);
     }

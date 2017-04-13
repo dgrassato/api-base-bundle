@@ -1,6 +1,6 @@
 <?php
 
-namespace BaseBundle\Security\Authentication;
+namespace BaseBundle\Security\Authentication\OAuth2;
 
 use OAuth2\IOAuth2Storage;
 use OAuth2\OAuth2;
@@ -9,7 +9,7 @@ use OAuth2\OAuth2ServerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OAuth2Ciandt extends OAuth2
+class OAuth2Server extends OAuth2
 {
     /**
      * Extend super constructor.

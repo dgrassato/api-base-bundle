@@ -36,6 +36,7 @@ class ApiProblem
         $this->statusCode = $statusCode;
         $this->level = $level;
 
+
         if ($type === null) {
             // no type? The default is about:blank and the title should
             // be the standard status code message
@@ -52,6 +53,7 @@ class ApiProblem
             }
             $title = $this->getTitle();
         } else {
+
             if (!isset(self::$titles[$type])) {
                 throw new \InvalidArgumentException('No title for type '.$type);
             }
@@ -65,6 +67,7 @@ class ApiProblem
 
     public function toArray()
     {
+
         return array_merge(
 
             array(
@@ -126,7 +129,13 @@ class ApiProblem
      */
     public function setType($type)
     {
-        $this->type = $type;
+        if (!isset(self::$titles[$type])) {
+            throw new \InvalidArgumentException('No title for type '.$type);
+        }
+
+        $title = self::$titles[$type];
+
+        $this->type = $title;
     }
 
     /**

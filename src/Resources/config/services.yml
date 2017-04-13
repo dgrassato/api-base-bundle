@@ -1,25 +1,23 @@
 services:
+    #### API exception
     api_base.exception_subscriber:
         class: BaseBundle\EventListener\ApiExceptionSubscriber
         arguments: ['%kernel.debug%', '@logger']
         tags:
             - { name: kernel.event_subscriber }
 
-    api_base.jwt.event.authentication_success_listener:
-        class: BaseBundle\Security\Authentication\AuthenticationSuccessListener
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
-
-    #### Paginating (TODO: Modify to use trait)
-    api_base.pagination.pagination:
-        class: BaseBundle\Pagination\Pagination
-        autowire: true
+#    api_base.jwt.event.authentication_success_listener:
+#        class: BaseBundle\Security\Authentication\AuthenticationSuccessListener
+#        tags:
+#            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
 
     #### Fractal Transformer
     api_base.transformer.abstract:
         abstract: true
         class: BaseBundle\Transformer\Transformer
-        arguments: ['@router', '@doctrine.orm.entity_manager']
+        calls:
+            - [ setManager, [ '@doctrine.orm.entity_manager' ] ]
+            - [ setRouter, [ '@router'] ]
 
     #### API Manager
     api_base.authentication_manager:
@@ -29,3 +27,9 @@ services:
             - [ setUserClass, [ "%api_base.entity_user_namespace%" ] ]
             - [ setJwtTimeExpiration, [ "%api_base.authentication.time_expiration%" ] ]
             - [ setJwtAuthenticationEncoder, [ "@lexik_jwt_authentication.encoder" ] ]
+
+    #### Paginating
+    api_base.pagination:
+        class: BaseBundle\Manager\Pagination
+        calls:
+            - [ setRouter, [ '@router'] ]

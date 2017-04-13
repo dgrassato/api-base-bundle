@@ -1,6 +1,6 @@
 <?php
 
-namespace BaseBundle\Transformer;
+namespace BaseBundle\Transformers;
 
 use League\Fractal;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -12,6 +12,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class Transformer extends Fractal\TransformerAbstract
 {
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
      */
@@ -20,7 +21,7 @@ class Transformer extends Fractal\TransformerAbstract
     /**
      * @var \Doctrine\Common\Persistence\ObjectManager;
      */
-    protected $om;
+    protected $manager;
 
     /**
      * @var array
@@ -32,10 +33,8 @@ class Transformer extends Fractal\TransformerAbstract
      */
     protected $defaultIncludes = [];
 
-    public function __construct(Router $router, ObjectManager $om)
+    public function __construct()
     {
-        $this->router = $router;
-        $this->om = $om;
     }
 
     /**
@@ -51,11 +50,11 @@ class Transformer extends Fractal\TransformerAbstract
      */
     protected function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->router->generate($route, $parameters, $referenceType);
+        return $this->getRouter()->generate($route, $parameters, $referenceType);
     }
 
     /**
-     * Shortcut to $this->om->getRepository();.
+     * Shortcut to $this->getManager()->getRepository();.
      *
      * @param $entity
      *
@@ -63,6 +62,47 @@ class Transformer extends Fractal\TransformerAbstract
      */
     protected function getRepository($entity)
     {
-        return $this->om->getRepository($entity);
+        return $this->getManager()->getRepository($entity);
     }
+
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     *
+     * @return Router
+     */
+    public function setRouter($router)
+    {
+        $this->router = $router;
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    public function getManager()
+    {
+        return $this->manager;
+    }
+
+    /**
+     * @param \Doctrine\Common\Persistence\ObjectManager $manager
+     *
+     * @return ObjectManager
+     */
+    public function setManager($manager)
+    {
+        $this->manager = $manager;
+
+        return $this;
+    }
+
+
 }

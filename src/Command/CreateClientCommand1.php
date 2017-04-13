@@ -4,45 +4,44 @@ namespace BaseBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class CreateClientCommand extends ContainerAwareCommand
+/**
+ * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ */
+class CreateClientCommand1 extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('api:oauth-server:client:create')
-            ->setDescription('Creates a new client')
-            ->addOption(
+            ->setName('api:oauth-server2:client:create')
+            ->setDescription('Creates a new oauth client')
+            ->addArgument(
                 'name',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Set client name(user, android, ios, etc).',
+                InputArgument::REQUIRED,
+                'Set client name(android, ios, etc).',
                 null
             )
-            ->addOption(
+
+            ->addArgument(
                 'redirect-uri',
-                'uri',
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                InputArgument::REQUIRED,
                 'Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs.',
-                ['http://127.0.0.1']
+                null
             )
-            ->addOption(
+            ->addArgument(
                 'grant-type',
-                'type',
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
                 'Sets allowed grant type for client. Use this option multiple times to set multiple grant types..',
                 null
             )
             ->setHelp(
-                <<<EOT
-                    The <info>%command.name%</info>command creates a new client.
+                <<<'EOT'
+                    The <info>%command.name%</info> command creates a new client.
 
-<info>php %command.full_name% [--redirect-uri=...] [--grant-type=...] name</info>
+<info>php %command.full_name% [--name=] [--redirect-uri=] [--grant-type=...]</info>
 
 EOT
             );
@@ -52,35 +51,44 @@ EOT
     {
         $clientManager = $this->getContainer()->get('fos_oauth_server.client_manager.default');
         $client = $clientManager->createClient();
-
-        $clientName = $input->getOption('name');
-        $client->setName($clientName);
-        $client->setRedirectUris($input->getOption('redirect-uri'));
-
-        $grantTypes = $input->getOption('grant-type');
-
-        if(is_string($grantTypes)){
-            $grantTypes = @explode(" ", $grantTypes);
-        }
-
-        $client->setAllowedGrantTypes($grantTypes);
+        $client->setName($input->getArgument('name'));
+        $client->setRedirectUris($input->getArguments('redirect-uri'));
+        $client->setAllowedGrantTypes($input->getArguments('grant-type'));
         $clientManager->updateClient($client);
+
         $output->writeln(
             sprintf(
-                "Added a new client($clientName):\n Client id(client_id): <info>%s</info> \n Client secret(client_secret): <info>%s</info> \n Available grant types: <info>%s</info> \n",
+                "Added a new client:\n Client id: <info>%s</info> \n Client secret: <info>%s</info>\n",
                 $client->getPublicId(),
-                $client->getSecret(),
-                implode(" ", $grantTypes)
+                $client->getSecret()
             )
         );
+        $output->writeln(
+            sprintf(
+                '/oauth/v2/token?client_id=%s&client_secret=%s&grant_type=%s',
+                $client->getPublicId(),
+                $client->getSecret(),
+                'client_credentials'
+            )
+        );
+//        $output->writeln(
+//            sprintf(
+//                '/oauth/v2/auth?client_id=%s&redirect_uri=%s&response_type=token',
+//                $client->getPublicId(),
+//                'http://symfony.dev'
+//            )
+//        );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $questions = array();
 
 
-        if (!$input->getOption('name')) {
+        if (!$input->getArgument('name')) {
             $question = new Question('Please choose a new client name, ex.:(ios, android, angular):');
             $question->setValidator(function ($name) {
                 if (empty($name)) {
@@ -92,7 +100,7 @@ EOT
             $questions['name'] = $question;
         }
 
-        if (!$input->getOption('redirect-uri')) {
+        if (!$input->getArgument('redirect-uri')) {
             $question = new Question('Please choose an redirect-uri [ default: http://127.0.0.1 ]: ');
 
             $question->setValidator(function ($redirectUri) {
@@ -106,32 +114,20 @@ EOT
         }
 
         $avilableType = ['password', 'refresh_token', 'authorization_code', 'client_credentials'];
-        if (!$input->getOption('grant-type')) {
+        if (!$input->getArgument('grant-type')) {
             $questionText = sprintf('Please choose a grant-type, available options [%s]: ', implode(", ", $avilableType));
             $question = new Question($questionText);
-            $question->setNormalizer(function ($grantType) use ($avilableType){
-
-                $grantTypes = @explode(" ", $grantType);
-                foreach ($grantTypes as $grantType) {
-                    if (!@in_array($grantType, $avilableType)) {
-                        throw new \Exception(
-                            sprintf('Available Grant type: %s', "\n- " . implode("\n- ", $avilableType))
-                        );
-
-                    }
-                }
-
-                return $grantTypes;
-            });
-
-            $question->setAutocompleterValues($avilableType);
-
             $question->setValidator(function ($grantType) use ($avilableType){
                 if (empty($grantType)) {
                     throw new \Exception('Grant type can not be empty');
                 }
 
+                if (!@in_array($avilableType, $grantType)){
+                    throw new \Exception(
+                        sprintf('Available Grant type: %s', "\n- ".implode("\n- ", $avilableType))
+                     );
 
+                }
 
                 return $grantType;
             });
@@ -141,7 +137,7 @@ EOT
 
         foreach ($questions as $name => $question) {
             $answer = $this->getHelper('question')->ask($input, $output, $question);
-            $input->setOption($name, $answer);
+            $input->setArgument($name, $answer);
         }
     }
 }
