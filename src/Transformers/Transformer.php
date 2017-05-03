@@ -6,7 +6,6 @@ use League\Fractal;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
 /**
  *Transformer that includes the router service for generating routes.
  */
@@ -14,7 +13,7 @@ class Transformer extends Fractal\TransformerAbstract
 {
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     * @var \Interop\Router\RouterInterface;
      */
     protected $router;
 
@@ -66,7 +65,7 @@ class Transformer extends Fractal\TransformerAbstract
     }
 
     /**
-     * @return \Symfony\Bundle\FrameworkBundle\Routing\Router
+     * @return \Interop\Router\RouterInterface
      */
     public function getRouter()
     {
@@ -74,7 +73,7 @@ class Transformer extends Fractal\TransformerAbstract
     }
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     * @param \Interop\Router\RouterInterface $router
      *
      * @return Router
      */

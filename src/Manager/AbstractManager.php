@@ -298,6 +298,10 @@ abstract class AbstractManager
 
         $element = $object->$getMethod();
 
+        if ($element === null ){
+           return;
+        }
+
         if (is_object($element)) {
 
             $element = $element->getId();

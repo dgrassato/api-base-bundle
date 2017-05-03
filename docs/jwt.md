@@ -107,13 +107,7 @@ security:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 ```
-
-Configure your `routing.yml` :
-
-``` yaml
-api_login_check:
-    path: /api/login_check
-```
+ 
 
 Usage
 -----
@@ -131,7 +125,7 @@ Store it (client side), the JWT is reusable until its ttl has expired (3600 seco
 Note: You can test getting the token with a simple curl command like this:
 
 ```bash
-curl -X POST http://localhost:8000/api/login_check -d _username=johndoe -d _password=test
+curl -X POST http://localhost:8000/api/token/login -d _username=admin -d _password=foo
 ```
 
 If it works, you will receive something like this:
@@ -142,33 +136,15 @@ If it works, you will receive something like this:
 }
 ```
 
-### 2. Use the token
+Just modify the provided `lexik_jwt_authentication.handler.authentication_success` service as success handler to
+generate the token to return the object of the authenticate user.
 
-Simply pass the JWT on each request to the protected firewall, either as an authorization header
-or as a query parameter. 
+```yaml
 
-By default only the authorization header mode is enabled : `Authorization: Bearer {token}`
+    api_auth_server.jwt.event.authentication_success_listener:
+            class: BaseBundle\Security\Authentication\AuthenticationSuccessListener
+            tags:
+                - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
 
-See [configuration reference](1-configuration-reference.md) document to enable query string parameter mode or change the header value prefix.
-
-Notes
------
-
-#### About token expiration
-
-Each request after token expiration will result in a 401 response.
-Redo the authentication process to obtain a new token. 
-
-Maybe you want to use a **refresh token** to renew your JWT. In this case you can check [JWTRefreshTokenBundle](https://github.com/gesdinet/JWTRefreshTokenBundle).
-
-#### Working with CORS requests
-
-This is more of a Symfony2 related topic, but see [Working with CORS requests](4-cors-requests.md) document
-to get a quick explanation on handling CORS requests.
-
-#### A stateless form_login replacement
-
-Using form_login security factory is very straightforward but it involves cookies exchange, even if the stateless parameter is set to true.
-
-This may not be a problem depending on the system that makes calls to your API (like a typical SPA). But if it is, take a look at the [GfreeauGetJWTBundle](https://github.com/gfreeau/GfreeauGetJWTBundle), which provides a stateless replacement for form_login.
+```
 

@@ -34,7 +34,7 @@ class ApiProblemException extends HttpException
      * @param LogLevel $level
      * @param array  $extra
      */
-    public static function throw($title, $errorType = 'invalid_body_format', $level = LogLevel::ERROR, $extra = [])
+    public static function raise($title, $errorType = 'invalid_body_format', $level = LogLevel::ERROR, $extra = [])
     {
         $problem = new ApiProblem(404, $errorType, $level);
         $problem->setTitle($title);

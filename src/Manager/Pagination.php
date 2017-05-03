@@ -19,10 +19,9 @@ use Symfony\Component\Routing\RouterInterface;
 class Pagination
 {
     /**
-     * @var RouterInterface $router
+     * @var \Interop\Router\RouterInterface $router
      */
     private $router;
-
 
     /**
      * @param                                                $collection
@@ -167,16 +166,16 @@ class Pagination
     }
 
     /**
-     * @return mixed
+     * @return \Interop\Router\RouterInterface
      */
     public function getRouter() {
         return $this->router;
     }
 
     /**
-     * @param mixed $router
+     * @param \Interop\Router\RouterInterface $router
      *
-     * @return Pagination
+     * @return \Interop\Router\RouterInterface
      */
     public function setRouter($router) {
         $this->router = $router;

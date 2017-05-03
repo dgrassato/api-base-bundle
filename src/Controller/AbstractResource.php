@@ -9,17 +9,17 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class BaseController
+ * Class AbstractResource
  * @package BaseBundle\Controller
  */
-abstract class BaseController extends FOSRestController
+abstract class AbstractResource extends FOSRestController
 {
     /**
      * This method should return default manager.
      *
      * @abstract
      *
-     * @return ObjectManager
+     * @return getManager
      */
     abstract protected function getManager();
 
@@ -34,10 +34,26 @@ abstract class BaseController extends FOSRestController
 
     /**
      * This method should return the default transform.
-     * @abstract
+     * @format NameSpace + .transformer.+ Class, all in lower case
+     * @see appbundle.transformer.user
+     * @param $otherTransformer appbundle.transformer.user
      * @return Transformer
      */
-    abstract protected function getTransformer();
+     protected function getDefaultTransformer()
+     {
+         $class = new \ReflectionClass($this->getEntityClass());
+
+         $namespace = substr($class->getNamespaceName(), 0, strrpos($class->getNamespaceName(), '\\'));
+
+         $transformer = sprintf('%s.transformer.%s', strtolower($namespace), strtolower($class->getShortName()));
+
+         if ($this->container->has($transformer)) {
+
+             return $this->get($transformer);
+         }
+
+
+     }
 
     /**
      * @return \Symfony\Component\Validator\ValidatorInterface
@@ -91,7 +107,12 @@ abstract class BaseController extends FOSRestController
 
             $problem = new ApiProblem(400);
             $problem->setTitle("Invalid serializer exception.");
-            $problem->setExtra(['filters' => $e]);
+            $problem->setExtra(['filters' =>
+                                   ['message' => $e->getMessage()],
+                                   ['code' => $e->getCode()],
+                                   ['line' => $e->getLine()],
+                                   ['string' => $e->getTraceAsString()],
+                               ]);
             throw new ApiProblemException($problem);
 
         }
@@ -104,11 +125,17 @@ abstract class BaseController extends FOSRestController
      *
      * @return array|\JMS\Serializer\scalar|object
      */
-    protected function unserializeClass($content)
+    protected function unserializeClass(\Symfony\Component\HttpFoundation\Request $request)
     {
         try {
 
+            /**
+             * @var \Symfony\Component\HttpFoundation\Request $request
+             */
+            //$request = $this->get('request_stack')->getCurrentRequest();
+            $content = $request->getContent();
             $class       = $this->getEntityClass();
+
             $contentJson = $this->unserialize($content, $class, 'json');
 
             return $contentJson;
@@ -117,7 +144,12 @@ abstract class BaseController extends FOSRestController
 
             $problem = new ApiProblem(400);
             $problem->setTitle("Invalid serializer class exception.");
-            $problem->setExtra(['filters' => $e]);
+            $problem->setExtra(['filters' =>
+                                   ['message' => $e->getMessage()],
+                                   ['code' => $e->getCode()],
+                                   ['line' => $e->getLine()],
+                                   ['string' => $e->getTraceAsString()],
+                               ]);
             throw new ApiProblemException($problem);
 
         }
@@ -128,7 +160,7 @@ abstract class BaseController extends FOSRestController
      *
      * @param $objeto
      */
-    public function fitler($objeto)
+    public function filter($objeto)
     {
         $filterService = $this->get('dms.filter');
 
@@ -137,20 +169,25 @@ abstract class BaseController extends FOSRestController
         } catch (\Exception $e) {
             $problem = new ApiProblem(400);
             $problem->setTitle("Invalid filter exception.");
-            $problem->setExtra(['filters' => $e->getMessage()]);
+            $problem->setExtra(['filters' =>
+                                   ['message' => $e->getMessage()],
+                                   ['code' => $e->getCode()],
+                                   ['line' => $e->getLine()],
+                                   ['string' => $e->getTraceAsString()],
+                               ]);
             throw new ApiProblemException($problem);
         }
     }
 
     /**
-     * Tranform array in object
+     * Tranform array in object(class)
      *
      * @param        $data
      * @param string $format
      *
      * @return mixed|string
      */
-    protected function serialize($data, $groups = [], $format = 'json')
+    protected function serialize($data, $groups = [], $version = null, $format = 'json')
     {
         $context = new SerializationContext();
         $context->setSerializeNull(TRUE);
@@ -164,6 +201,10 @@ abstract class BaseController extends FOSRestController
             $groups[] = 'deep';
         }
         $context->setGroups($groups);
+
+        if($version) {
+            $context->setVersion($version);
+        }
 
         return $this->container->get('jms_serializer')
             ->serialize($data, $format, $context);
@@ -218,5 +259,106 @@ abstract class BaseController extends FOSRestController
         return new Response($json, $statusCode, array(
             'Content-Type' => 'application/json'
         ));
+    }
+
+    /**
+     * Create a resource
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function create($data)
+    {
+        return new ApiProblem(405, 'The POST method has not been defined');
+    }
+
+    /**
+     * Delete a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
+    public function delete($id)
+    {
+        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+    }
+
+    /**
+     * Delete a collection, or members of a collection
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function deleteList($data)
+    {
+        return new ApiProblem(405, 'The DELETE method has not been defined for collections');
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
+    public function fetch($id)
+    {
+        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+    }
+
+    /**
+     * Fetch all or a subset of resources
+     *
+     * @param  array $params
+     * @return ApiProblem|mixed
+     */
+    public function fetchAll($params = [])
+    {
+        return new ApiProblem(405, 'The GET method has not been defined for collections');
+    }
+
+    /**
+     * Patch (partial in-place update) a resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patch($id, $data)
+    {
+        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
+    }
+
+    /**
+     * Patch (partial in-place update) a collection or members of a collection
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patchList($data)
+    {
+        return new ApiProblem(405, 'The PATCH method has not been defined for collections');
+    }
+
+    /**
+     * Replace a collection or members of a collection
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function replaceList($data)
+    {
+        return new ApiProblem(405, 'The PUT method has not been defined for collections');
+    }
+
+    /**
+     * Update a resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function update($id, $data)
+    {
+        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
     }
 }
